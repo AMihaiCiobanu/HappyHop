@@ -1,0 +1,5 @@
+# Folder construit de deploy.sh — se regenerează, nu se versionează
+dist/
+
+# macOS
+.DS_Store
