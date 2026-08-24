@@ -33,6 +33,9 @@
     if (!panel || !panel.hidden) return;
     panel.hidden = false;
     setBackgroundInert(true, panel);
+    /* daca headerul era ascuns de scroll, il readucem — altfel ramane ascuns dupa inchidere */
+    var hdr = document.querySelector('.site-header');
+    if (hdr) hdr.classList.remove('is-hidden');
     document.body.classList.add('is-locked');
     toggle.setAttribute('aria-expanded', 'true');
     var first = panel.querySelector('a, button');
@@ -67,6 +70,40 @@
     window.addEventListener('resize', function () {
       if (window.innerWidth >= 1024) closePanel(false);
     });
+  }
+
+  /* ---------- Header care se ascunde la scroll (doar mobil) ---------- */
+  var header = document.querySelector('.site-header');
+  if (header) {
+    var lastY = window.pageYOffset || 0;
+    var ticking = false;
+    var DELTA = 6;          /* ignora micro-scroll / bounce */
+    var SHOW_ABOVE = 80;    /* langa varf headerul ramane mereu vizibil */
+
+    function onScrollFrame() {
+      ticking = false;
+      var y = window.pageYOffset || 0;
+      if (y < 0) y = 0;
+
+      /* desktop sau meniu deschis: header mereu vizibil */
+      if (window.innerWidth >= 1024 || document.body.classList.contains('is-locked')) {
+        header.classList.remove('is-hidden');
+        lastY = y;
+        return;
+      }
+      if (Math.abs(y - lastY) < DELTA) return;
+
+      if (y > lastY && y > SHOW_ABOVE) header.classList.add('is-hidden');
+      else header.classList.remove('is-hidden');
+
+      lastY = y;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(onScrollFrame);
+    }, { passive: true });
   }
 
   /* ---------- Reveal la scroll ---------- */

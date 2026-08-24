@@ -573,6 +573,14 @@ html.js .no-js-fallback { display: none; }
 @media (max-width: 1023px) {
   /* pe mobil bara de jos are deja butonul de WhatsApp */
   .float-wa { display: none; }
+
+  /* header care se ascunde la scroll in jos si reapare la scroll in sus */
+  .site-header { transition: transform .28s ease; will-change: transform; }
+  .site-header.is-hidden { transform: translateY(-100%); }
+}
+
+@media (max-width: 1023px) and (prefers-reduced-motion: reduce) {
+  .site-header { transition: none; }
 }
 
 @media (min-width: 1024px) {
