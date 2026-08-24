@@ -356,6 +356,47 @@ body.is-locked .float-wa { display: none; }
 .cta-band p { color: #5C2B45; max-width: 52ch; margin-inline: auto; }
 .cta-band__actions { display: flex; flex-wrap: wrap; gap: .8rem; justify-content: center; margin-top: var(--sp-5); }
 
+/* ============ URMĂREȘTE-NE (Facebook) ============ */
+.social-band {
+  position: relative; overflow: hidden;
+  background: linear-gradient(160deg, #EAF1FE 0%, #F7FAFF 55%, var(--hh-white) 100%);
+  border: 1px solid #D8E4FA; border-radius: var(--r-xl);
+  box-shadow: var(--shadow-sm);
+  padding: clamp(1.8rem, 5vw, 3.2rem);
+}
+/* Bule decorative, în ton cu banda de CTA — pur ornamentale. */
+.social-band::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(circle at 90% 12%, rgba(24,119,242,.10) 0 90px, transparent 91px),
+                    radial-gradient(circle at 6% 88%, rgba(254,154,204,.16) 0 70px, transparent 71px);
+}
+.social-band > * { position: relative; z-index: 1; }
+.social-band__head { text-align: center; max-width: 60ch; margin-inline: auto; }
+.social-band__head > * + * { margin-top: var(--sp-4); }
+
+.social-perks { display: grid; gap: var(--sp-4); margin-top: var(--sp-6); }
+.social-perks li {
+  display: flex; gap: var(--sp-4); align-items: flex-start;
+  background: #fff; border: 1px solid var(--hh-line); border-radius: var(--r-lg);
+  padding: var(--sp-4) var(--sp-5); box-shadow: var(--shadow-sm);
+}
+.social-perks__icon {
+  width: 48px; height: 48px; border-radius: 16px; flex: none;
+  display: grid; place-items: center;
+}
+.social-perks__icon svg { width: 26px; height: 26px; }
+.social-perks h3 { font-size: 1.05rem; margin-bottom: .25rem; }
+.social-perks p { color: var(--hh-muted); font-size: .96rem; }
+
+.social-band__actions {
+  display: flex; flex-wrap: wrap; gap: .8rem; justify-content: center; margin-top: var(--sp-6);
+}
+
+@media (min-width: 768px) {
+  .social-perks { grid-template-columns: repeat(3, 1fr); }
+  .social-perks li { flex-direction: column; gap: var(--sp-3); }
+}
+
 /* ============ FAQ ============ */
 .faq { display: grid; gap: .8rem; max-width: 56rem; margin-inline: auto; }
 .faq details {

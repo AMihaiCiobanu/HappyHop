@@ -360,6 +360,47 @@ def page_index(icon, C):
       </div>
     </section>
 
+    <section class="section--tight">
+      <div class="container">
+        <div class="social-band reveal">
+          <div class="social-band__head">
+            <span class="eyebrow">%s Rămâi aproape</span>
+            <h2>Urmărește-ne pe Facebook</h2>
+            <p class="lead">Acolo anunțăm primii ofertele și reducerile, zilele tematice și concursurile cu premii — plus poze de la petreceri și noutăți despre locația nouă din Miroslava.</p>
+          </div>
+
+          <ul class="social-perks">
+            <li>
+              <span class="social-perks__icon i-yellow">%s</span>
+              <div>
+                <h3>Oferte și reduceri</h3>
+                <p>Prețuri speciale la intrare, anunțate doar pe pagină.</p>
+              </div>
+            </li>
+            <li>
+              <span class="social-perks__icon i-pink">%s</span>
+              <div>
+                <h3>Evenimente și zile tematice</h3>
+                <p>Ateliere, mascote și surprize — afli din timp când vin.</p>
+              </div>
+            </li>
+            <li>
+              <span class="social-perks__icon i-blue">%s</span>
+              <div>
+                <h3>Concursuri cu premii</h3>
+                <p>Intrări gratuite și pachete de petrecere pentru urmăritori.</p>
+              </div>
+            </li>
+          </ul>
+
+          <div class="social-band__actions">
+            <a class="btn btn--fb" href="%s" target="_blank" rel="noopener">%s Urmărește-ne pe Facebook</a>
+            <a class="btn btn--outline" href="%s" target="_blank" rel="noopener">%s Scrie-ne pe WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section">
       <div class="container">
         <div class="cta-band reveal">
@@ -399,6 +440,8 @@ def page_index(icon, C):
                 "Masă de petrecere cu fundal foto Happy Birthday"),
         icon("i-map"), loc_cards, icon("i-arrow"),
         icon("i-sparkle"), strip, icon("i-arrow"),
+        icon("i-heart"), icon("i-ticket"), icon("i-balloon"), icon("i-star"),
+        C["FACEBOOK"], icon("i-fb"), C["WA_GEN"], icon("i-wa"),
         C["TEL1"], icon("i-phone"), C["TEL1F"], C["WA_GEN"], icon("i-wa"),
     )
 

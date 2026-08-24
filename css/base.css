@@ -171,6 +171,9 @@ h3 { font-size: var(--fs-h3); }
 .btn--wa { background: #25D366; color: #06381A; box-shadow: 0 8px 20px rgba(37,211,102,.35); }
 .btn--wa:hover { background: #3ae07a; }
 
+.btn--fb { background: #1877F2; color: #fff; box-shadow: 0 8px 20px rgba(24,119,242,.35); }
+.btn--fb:hover { background: #0F63D2; box-shadow: 0 12px 26px rgba(24,119,242,.45); }
+
 .btn--ghost { background: rgba(255,255,255,.16); color: #fff; border: 2px solid rgba(255,255,255,.75); backdrop-filter: blur(4px); }
 .btn--ghost:hover { background: rgba(255,255,255,.28); }
 

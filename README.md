@@ -1,14 +1,14 @@
 # Happy & Hop — site static
 
-Site vitrină pentru locurile de joacă Happy & Hop din Iași. HTML + CSS + JavaScript simplu,
-fără framework, fără build step obligatoriu, fără dependențe instalate. Se poate publica pe
-orice găzduire care servește fișiere (Netlify, Vercel, cPanel, hosting-ul actual).
+Site vitrină pentru locurile de joacă Happy & Hop din Iași: 11 pagini HTML + CSS + JavaScript
+simplu, fără framework și fără dependențe de instalat. Se poate publica pe orice găzduire care
+servește fișiere (Netlify, Vercel, cPanel, hosting-ul actual).
 
 ## Structura
 
 ```
 index.html                     Acasă
-atractii.html                  Cele 7 zone de joacă + reguli
+atractii.html                  Cele 7 zone de joacă, siguranță, reguli de acces
 petreceri.html                 Pachete, prețuri (1490 / 1990 lei), extraopțiuni, FAQ
 locatii.html                   Hub-ul locațiilor, cu link către fiecare pagină
 loc-de-joaca-socola.html       Pagină proprie: Bd. Socola 27A
@@ -18,15 +18,18 @@ galerie.html                   Galerie foto cu lightbox
 contact.html                   Telefoane, formular care compune mesaj WhatsApp
 politica-confidentialitate.html
 404.html
+
 css/base.css                   reset, culori, tipografie, butoane
-css/site.css                   componente, secțiuni, responsive
-js/site.js                     meniu mobil, lightbox, animații, formular WhatsApp
+css/site.css                   componente, secțiuni, hartă, responsive
+js/site.js                     meniu mobil, lightbox, animații, validare formular, WhatsApp
 assets/img/                    fotografii optimizate (400 / 800 / 1600 px)
-assets/brand/                  logo, favicon, imagine Open Graph
-_source-photos/                fotografiile originale — NU se urcă pe server
-_tools/                        generator opțional de pagini — NU se urcă pe server
-deploy.sh                      construiește dist/ cu exact fișierele publice
+assets/brand/                  logo, favicon, apple-touch-icon, imagine Open Graph
 robots.txt, sitemap.xml
+
+_tools/                        generatorul paginilor — NU se urcă pe server
+_source-photos/                fotografiile originale — NU se urcă pe server
+deploy.sh                      construiește dist/ cu exact fișierele publice
+dist/                          rezultatul lui deploy.sh (ignorat de git)
 ```
 
 ## Rulare locală
@@ -43,48 +46,59 @@ Apoi deschide http://localhost:5173.
 ./deploy.sh
 ```
 
-Creează `dist/` cu paginile, `css/`, `js/` și `assets/` — fără `_source-photos/` (2,6 MB de
-originale) și fără `_tools/`. Urci conținutul lui `dist/`, nu rădăcina proiectului.
+Creează `dist/` (~3,6 MB) cu paginile, `css/`, `js/` și `assets/` — fără `_source-photos/` și
+fără `_tools/`. **Se urcă pe server conținutul lui `dist/`, nu rădăcina proiectului.**
+
+Proiectul e sub git, cu `dist/` și `.DS_Store` în `.gitignore`. Dacă repo-ul ajunge pe GitHub,
+Netlify sau Vercel se pot lega direct la el și fac deploy automat la fiecare push.
 
 ## Cum modifici conținutul
 
-Paginile sunt HTML obișnuit — deschizi fișierul și editezi textul. Locuri utile:
-
-- **Prețurile petrecerilor** — `petreceri.html`, secțiunea `id="preturi"`.
-- **Programul locațiilor** — `locatii.html` (listele `<dl class="hours">`) și `contact.html`.
-- **Telefoanele** — apar în header, footer, bara de jos și pe pagina de contact.
-  Caută `0726347494` și `0740750993`. Numărul de WhatsApp apare ca `40726347494`
-  (prefix internațional, fără `+`). `js/site.js` nu conține numere: formularul citește
-  linkul din atributul `data-wa-url` al formularului, deci e suficient să schimbi HTML-ul.
-- **Culorile brandului** — `css/base.css`, blocul `:root` (`--hh-blue`, `--hh-pink`, …).
-
-### Generatorul opțional (`_tools/`)
-
-Header-ul, footer-ul și setul de iconuri sunt identice în toate paginile. Ca să nu le modifici
-manual în 8 fișiere, poți folosi generatorul:
+Textele, structura paginilor și meniul stau în **`_tools/pages.py`** și **`_tools/gen.py`**.
+După orice modificare:
 
 ```bash
 cd _tools && python3 gen.py
 ```
 
-**Atenție:** comanda rescrie complet toate fișierele `.html` din rădăcină. Dacă ai editat direct
-HTML-ul, modificările se pierd. Fie lucrezi doar în `_tools/pages.py` și regenerezi, fie ștergi
-folderul `_tools/` și editezi HTML-ul direct. Generatorul nu este necesar pentru publicare.
+Comanda rescrie complet fișierele `.html` din rădăcină. Poți edita și direct HTML-ul (e HTML
+obișnuit, fără șabloane), dar modificările se pierd la următoarea rulare a generatorului — și
+nu se propagă în celelalte 10 pagini, pentru că header-ul, footer-ul și iconurile sunt scrise
+identic în fiecare fișier.
+
+Locuri utile:
+
+| Ce schimbi | Unde |
+|---|---|
+| Locații: nume, adresă, program, coordonate, link Maps | `LOCATIONS` din `_tools/pages.py` |
+| Prețurile petrecerilor | `page_petreceri()` din `_tools/pages.py` (și `_party_service()` pentru datele structurate) |
+| Telefoane, WhatsApp, Facebook | constantele din capul lui `_tools/gen.py` (`TEL1`, `TEL2`, `WA`, `FACEBOOK`, `SOCIAL`) |
+| Mesajele de eroare ale formularului | atributele `data-eroare` din `page_contact()` |
+| Culorile brandului | `css/base.css`, blocul `:root` (`--hh-blue`, `--hh-pink`, …) |
+| Iconuri SVG | `_tools/sprite.html` |
+
+Programul unei locații se scrie **o singură dată**, în `LOCATIONS`, și apare peste tot: hero-ul
+de pe prima pagină, cardurile, hub-ul, pagina locației și JSON-LD-ul.
+
+> **Atenție dacă editezi CSS/JS de mână:** paginile linkează fișierele cu o amprentă a
+> conținutului (`css/site.css?v=f442f409`), calculată la rularea generatorului. Dacă modifici
+> un fișier CSS sau JS fără să rulezi apoi `gen.py`, browserele vor continua să servească
+> versiunea veche din cache.
 
 ## Imagini
 
-Fotografiile originale stau în `_source-photos/`. Variantele servite în pagini sunt generate cu
+Fotografiile originale stau în `_source-photos/`. Variantele servite în pagini se generează cu
 `sips` (inclus în macOS):
 
 ```bash
 for f in _source-photos/*.jpg; do b=$(basename "$f" .jpg); ow=$(sips -g pixelWidth "$f" | awk '/pixelWidth/{print $2}'); for w in 400 800 1600; do [ "$w" -le "$ow" ] && sips --resampleWidth $w -s format jpeg -s formatOptions 45 "$f" --out "assets/img/${b}-${w}.jpg"; done; [ "$ow" -lt 1600 ] && sips -s format jpeg -s formatOptions 45 "$f" --out "assets/img/${b}-max.jpg"; done
 ```
 
-Sufixul `-max` înseamnă „lățimea originală”, folosit la pozele verticale mai înguste de 1600 px.
+Sufixul `-max` înseamnă „lățimea originală", folosit la pozele verticale mai înguste de 1600 px.
 
 Dacă înlocuiești o poză cu una de altă dimensiune, actualizează și `IMG_DIMS` din
 `_tools/pages.py` — de acolo se calculează `width`/`height` și descriptorii `srcset`, ca
-raportul de aspect declarat în HTML să fie mereu cel real.
+raportul de aspect declarat în HTML să fie mereu cel real (altfel pagina „sare" la încărcare).
 
 WebP ar reduce încă ~30% din greutate, dar `sips` nu scrie WebP. Dacă vrei:
 
@@ -93,29 +107,27 @@ brew install webp
 for f in assets/img/*.jpg; do cwebp -q 78 "$f" -o "${f%.jpg}.webp"; done
 ```
 
-apoi adaugi `<source type="image/webp" srcset="...">` în jurul fiecărui `<img>`.
+apoi adaugi `<source type="image/webp" srcset="…">` în jurul fiecărui `<img>`.
 
 ## SEO — stadiu
 
-Completate: coordonatele exacte ale celor trei locații (`geo` în `LOCATIONS`, `_tools/pages.py`),
-linkul real de Google Maps al fiecărui loc (`place_url`) și pagina de Facebook
-(`SOCIAL` în `_tools/gen.py` — apare în footer și ca `sameAs`).
+Date structurate publicate (JSON-LD, câte un `@graph` per pagină):
+
+- `Organization` + `WebSite` pe prima pagină, cu logo, telefoane și `sameAs` către Facebook
+- `AmusementPark` pentru fiecare din cele 3 locații — adresă, telefon, program, coordonate
+  `geo`, `hasMap`; Miroslava apare fără program, cu „Deschidere în curând"
+- `Service` cu cele două oferte de petreceri (1490 / 1990 lei, în RON) pe `petreceri.html`
+- `FAQPage` pe `petreceri.html` și `BreadcrumbList` pe fiecare subpagină
+
+Completate: coordonatele exacte ale celor 3 locații, linkul de Google Maps al fiecărui loc,
+pagina de Facebook, titluri și descrieri unice pe fiecare pagină, canonical fără `index.html`,
+`noindex` pe 404, sitemap cu 10 URL-uri.
 
 Mai poate fi adăugat: **Instagram**, în lista `SOCIAL` din `_tools/gen.py`.
 
-Harta de pe paginile de locație se construiește automat din `geo`; butoanele „Deschide în Google
-Maps" folosesc `place_url`, cu rezervă pe căutare după adresă dacă lipsește. După orice
-modificare: `cd _tools && python3 gen.py`.
-
-Ce este deja publicat ca date structurate: `Organization` + `WebSite` (homepage),
-`AmusementPark` pentru fiecare din cele 3 locații (cu adresă, telefon, program, hartă),
-`Service` cu cele două oferte de petreceri (1490 / 1990 lei), `FAQPage` și `BreadcrumbList`
-pe fiecare subpagină.
-
-**Restul depinde de lucruri din afara site-ului**, în ordinea impactului: profil Google
-Business revendicat pentru fiecare locație, recenzii Google, linkuri de pe paginile Moldova
-Mall și Family Market, verificarea proprietății în Google Search Console și trimiterea
-`sitemap.xml`.
+**Restul depinde de lucruri din afara site-ului**, în ordinea impactului: profil Google Business
+revendicat pentru fiecare locație, recenzii Google, linkuri de pe paginile Moldova Mall și
+Family Market, verificarea proprietății în Google Search Console și trimiterea `sitemap.xml`.
 
 ## Ce trebuie confirmat cu clientul
 
@@ -125,35 +137,35 @@ mai jos; corectează dacă e cazul.
 1. **Telefoane.** Site-ul folosește `0726 347 494` și `0740 750 993` (de pe pagina veche de
    contact). Posterul de petreceri din locație afișează alte numere: `0332407300` și
    `0736165612`. Vezi comentariul din `contact.html`.
-2. **A doua locație.** Pagina veche „Locații” anunța *Family Market Miroslava*, iar pagina de
+2. **A doua locație.** Pagina veche „Locații" anunța *Family Market Miroslava*, iar pagina de
    contact lista *Strada Muntenimii 7 – Hotel Ildis*. Site-ul nou publică doar Miroslava, marcată
-   „În curând”. Dacă locația din Muntenimii funcționează, trebuie adăugată în `locatii.html`,
-   `contact.html`, footer și `_tools/pages.py`.
+   „În curând". Dacă locația din Muntenimii funcționează, trebuie adăugată în `LOCATIONS`.
 3. **Prețuri de intrare.** Nu există nicăieri tarife pentru Acces individual / Pachet family /
    Abonament lunar, așa că paginile trimit la telefon. Când primești cifrele, se completează în
-   secțiunea „Pachete de joacă” din `index.html`.
-4. **Moldova Mall.** Pagina veche de contact spunea „deschidere în 15 mai”; locația apare
+   secțiunea „Pachete de joacă" din `page_index()`.
+4. **Moldova Mall.** Pagina veche de contact spunea „deschidere în 15 mai"; locația apare
    funcțională în pozele din octombrie 2025, deci este prezentată ca deschisă.
 
 ## Note tehnice
 
-- Formularul de contact nu trimite date nicăieri: compune un mesaj și îl deschide în WhatsApp,
-  de pe telefonul vizitatorului. Site-ul vechi nu publica nicio adresă de email, așa că nu s-a
-  inventat una. Fără JavaScript formularul este ascuns și în locul lui apare un bloc cu linkul
-  de WhatsApp și numărul de telefon, ca să nu existe un buton care pare că trimite, dar nu trimite.
-- Fără cookies, fără analytics. Singura resursă externă este Google Fonts.
-- Tot conținutul este vizibil și fără JavaScript; JS adaugă doar meniul mobil, lightbox-ul,
-  animațiile la scroll și formularul WhatsApp.
-- Fiecare pagină primește doar iconurile SVG pe care le folosește (generatorul le selectează
-  automat din `_tools/sprite.html`).
-- CSS-ul și JS-ul sunt linkate cu o amprentă a conținutului (`site.css?v=f442f409`), recalculată
-  la fiecare `gen.py`. Fără ea, browserele și hostingul continuă să servească versiunea veche
-  după un update.
-- Formularul de contact își face singur validarea, cu mesaje în română. Bulele native ale
+- **Fără cookies proprii și fără analytics.** Resurse externe: Google Fonts (fonturile),
+  Google Maps (harta integrată pe paginile de locație, se încarcă la derulare și poate seta
+  cookies Google) și linkuri simple, care nu încarcă nimic în pagină: `wa.me`, Facebook,
+  Google Maps și semnătura „Made by SoftApps" din footer. Serviciile care chiar încarcă ceva
+  sunt descrise în `politica-confidentialitate.html`.
+- **Formularul de contact nu trimite date nicăieri**: compune un mesaj și îl deschide în
+  WhatsApp, de pe telefonul vizitatorului. Site-ul vechi nu publica nicio adresă de email, așa
+  că nu s-a inventat una.
+- **Fără JavaScript** formularul este ascuns, iar în locul lui apare un bloc cu linkul de
+  WhatsApp și numărul de telefon — ca să nu existe un buton care pare că trimite, dar nu trimite.
+  Restul conținutului (texte, meniu, poze, program) rămâne vizibil.
+- **Validarea formularului** e făcută de site, cu mesaje în română. Bulele native ale
   browserului sunt dezactivate (`novalidate`), pentru că textul lor vine din limba interfeței
-  browserului, nu din `lang="ro"`. Mesajele se editează în atributele `data-eroare` din
-  `_tools/pages.py`.
-- Date structurate JSON-LD: `AmusementPark` (2 locații deschise) pe `index.html`, `FAQPage` pe
-  `petreceri.html`.
-- Înainte de publicare pe domeniul real, verifică `sitemap.xml` și `robots.txt` (conțin
-  `https://happyhop.ro`) și `<link rel="canonical">` din fiecare pagină.
+  browserului, nu din `lang="ro"`.
+- **Iconuri**: fiecare pagină primește doar simbolurile SVG pe care le folosește, selectate
+  automat de generator din `_tools/sprite.html`.
+- **Accesibilitate**: contrast verificat AA, meniul mobil și lightbox-ul sunt dialoguri modale
+  (`aria-modal`, fundal `inert`, focus trap, Escape), toate imaginile au `alt` în română,
+  animațiile se opresc la `prefers-reduced-motion`.
+- Înainte de publicare pe domeniul real, verifică `sitemap.xml`, `robots.txt` și
+  `<link rel="canonical">` — toate conțin `https://happyhop.ro`.
