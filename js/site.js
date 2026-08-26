@@ -285,4 +285,22 @@
       window.open(base + '?text=' + encodeURIComponent(text), '_blank', 'noopener');
     });
   }
+
+  /* ---------- Slider recenzii ---------- */
+  document.querySelectorAll('[data-slider]').forEach(function (slider) {
+    var track = slider.querySelector('[data-slider-track]');
+    var prev = slider.querySelector('[data-slider-prev]');
+    var next = slider.querySelector('[data-slider-next]');
+    if (!track || !prev || !next) return;
+
+    function step(dir) {
+      var card = track.querySelector('.review-card');
+      var gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      var amount = card ? card.getBoundingClientRect().width + gap : track.clientWidth;
+      track.scrollBy({ left: dir * amount, behavior: reduceMotion ? 'auto' : 'smooth' });
+    }
+
+    prev.addEventListener('click', function () { step(-1); });
+    next.addEventListener('click', function () { step(1); });
+  });
 })();

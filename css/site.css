@@ -190,6 +190,36 @@ body.is-locked { overflow: hidden; }
 .i-blue  { background: #E6EDFB;               color: var(--hh-blue); }
 .i-orange{ background: #FFE9E0;               color: #D2451C; }
 
+/* ============ RECENZII ============ */
+.review-card {
+  background: #fff; border-radius: var(--r-lg); padding: var(--sp-5);
+  box-shadow: var(--shadow-sm); border: 1px solid var(--hh-line);
+  display: flex; flex-direction: column; gap: var(--sp-3);
+}
+.review-card__stars { display: flex; gap: 2px; color: var(--hh-yellow); }
+.review-card__stars svg { width: 18px; height: 18px; fill: var(--hh-yellow); }
+.review-card p { color: var(--hh-ink); font-size: .96rem; line-height: 1.6; }
+.review-card__src { margin-top: auto; font-size: .82rem; font-weight: 700; color: var(--hh-muted); }
+
+.reviews-slider__track {
+  display: flex; gap: var(--sp-4); overflow-x: auto; scroll-snap-type: x mandatory;
+  scrollbar-width: none; padding-bottom: 2px;
+}
+.reviews-slider__track::-webkit-scrollbar { display: none; }
+.reviews-slider__track .review-card {
+  flex: 0 0 85%; scroll-snap-align: start;
+}
+.reviews-slider__nav { display: flex; justify-content: center; gap: var(--sp-3); margin-top: var(--sp-5); }
+.slider-btn {
+  width: 48px; height: 48px; border-radius: 50%; flex: none;
+  background: var(--hh-sky-soft); color: var(--hh-deep);
+  display: grid; place-items: center; transition: background .2s ease, transform .2s ease;
+}
+.slider-btn:hover { background: var(--hh-blue); color: #fff; transform: translateY(-2px); }
+.slider-btn svg { width: 22px; height: 22px; }
+@media (min-width: 640px) { .reviews-slider__track .review-card { flex-basis: calc(50% - var(--sp-4) / 2); } }
+@media (min-width: 1024px) { .reviews-slider__track .review-card { flex-basis: calc(33.333% - var(--sp-4) * 2 / 3); } }
+
 /* ============ PANOU „DE CE" ============ */
 .panel {
   background: linear-gradient(140deg, var(--hh-deep), var(--hh-blue) 55%, var(--hh-blue-soft));
