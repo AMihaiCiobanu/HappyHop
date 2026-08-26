@@ -624,7 +624,7 @@ html.js .no-js-fallback { display: none; }
   .grid-cards--4 { grid-template-columns: repeat(4, 1fr); }
   .grid-cards--two { grid-template-columns: repeat(2, 1fr); }
   .split { grid-template-columns: 1.05fr 1fr; gap: 4.5rem; }
-  .site-footer__grid { grid-template-columns: 1.7fr 1fr 1fr 1.1fr; }
+  .site-footer__grid { grid-template-columns: 1.6fr 0.8fr 1.3fr 1.1fr; }
   .loc-card { grid-template-columns: 0.9fr 1.1fr; }
 }
 
