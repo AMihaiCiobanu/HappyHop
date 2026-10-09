@@ -1,8 +1,9 @@
 # Happy & Hop — site static
 
 Site vitrină pentru locurile de joacă Happy & Hop din Iași: 11 pagini HTML + CSS + JavaScript
-simplu, fără framework și fără dependențe de instalat. Publicat pe GitHub Pages direct din
-branch-ul `main`: https://amihaiciobanu.github.io/HappyHop/
+simplu, fără framework și fără dependențe de instalat. **Încă nelansat**: clientul nu și-a dat
+acordul pentru publicare. Până atunci există doar un preview pe GitHub Pages (din `main`),
+https://amihaiciobanu.github.io/HappyHop/, iar happyhop.ro rămâne pe site-ul vechi.
 
 ## Structura
 
@@ -42,9 +43,10 @@ Apoi deschide http://localhost:5173.
 
 ## Publicare
 
-Site-ul e pe **GitHub Pages**, cu sursa `main` / rădăcina repo-ului
-(repo `AMihaiCiobanu/HappyHop`, Settings → Pages). **Orice push pe `main` ajunge live** în
-aproximativ un minut, la https://amihaiciobanu.github.io/HappyHop/. Nu e nevoie de `dist/`.
+**Preview, nu lansare.** GitHub Pages construiește site-ul din `main` / rădăcina repo-ului
+(repo `AMihaiCiobanu/HappyHop`, Settings → Pages), la https://amihaiciobanu.github.io/HappyHop/.
+Linkul e public pentru cine îl are, dar nu e anunțat nicăieri — e pentru a-i arăta clientului
+varianta nouă. Orice push pe `main` actualizează preview-ul în aproximativ un minut.
 
 - Pages publică rădăcina prin Jekyll, care ignoră folderele ce încep cu `_`: de aceea
   `_tools/` și `_source-photos/` nu ajung pe site. **Nu adăuga un fișier `.nojekyll`** — le-ar
@@ -53,9 +55,10 @@ aproximativ un minut, la https://amihaiciobanu.github.io/HappyHop/. Nu e nevoie 
   merge la fel sub `/HappyHop/` și, mai târziu, la rădăcina domeniului.
 - Starea ultimului build: `gh api repos/AMihaiCiobanu/HappyHop/pages/builds/latest`.
 
-### Domeniul happyhop.ro
+### Lansarea pe happyhop.ro — doar după acordul clientului
 
-`happyhop.ro` arată încă site-ul vechi (hosting-ul actual, `138.199.246.140`). Ca să treacă pe Pages:
+`happyhop.ro` arată site-ul vechi (hosting-ul actual, `138.199.246.140`) și rămâne așa până când
+clientul aprobă lansarea. Atunci, ca domeniul să treacă pe Pages:
 
 1. În Settings → Pages → Custom domain scrie `happyhop.ro`. GitHub face un commit cu fișierul
    `CNAME` pe `main` — rulează `git pull` după aceea.
