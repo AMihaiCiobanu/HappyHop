@@ -3,3 +3,6 @@ dist/
 
 # macOS
 .DS_Store
+
+# Oferte comerciale — documente interne; repo-ul e public și publicat prin GitHub Pages
+Oferta_*.docx
