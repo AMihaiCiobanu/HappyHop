@@ -1,8 +1,8 @@
 # Happy & Hop — site static
 
 Site vitrină pentru locurile de joacă Happy & Hop din Iași: 11 pagini HTML + CSS + JavaScript
-simplu, fără framework și fără dependențe de instalat. Se poate publica pe orice găzduire care
-servește fișiere (Netlify, Vercel, cPanel, hosting-ul actual).
+simplu, fără framework și fără dependențe de instalat. Publicat pe GitHub Pages direct din
+branch-ul `main`: https://amihaiciobanu.github.io/HappyHop/
 
 ## Structura
 
@@ -22,13 +22,13 @@ politica-confidentialitate.html
 css/base.css                   reset, culori, tipografie, butoane
 css/site.css                   componente, secțiuni, hartă, responsive
 js/site.js                     meniu mobil, lightbox, animații, validare formular, WhatsApp
-assets/img/                    fotografii optimizate (400 / 800 / 1600 px)
+assets/img/                    fotografii optimizate (400 / 800 / 1600 px), fiecare în AVIF + JPG
 assets/brand/                  logo, favicon, apple-touch-icon, imagine Open Graph
 robots.txt, sitemap.xml
 
-_tools/                        generatorul paginilor — NU se urcă pe server
-_source-photos/                fotografiile originale — NU se urcă pe server
-deploy.sh                      construiește dist/ cu exact fișierele publice
+_tools/                        generatorul paginilor — nu se publică
+_source-photos/                fotografiile originale — nu se publică
+deploy.sh                      construiește dist/ pentru o găzduire clasică (nu e folosit de Pages)
 dist/                          rezultatul lui deploy.sh (ignorat de git)
 ```
 
@@ -42,15 +42,40 @@ Apoi deschide http://localhost:5173.
 
 ## Publicare
 
+Site-ul e pe **GitHub Pages**, cu sursa `main` / rădăcina repo-ului
+(repo `AMihaiCiobanu/HappyHop`, Settings → Pages). **Orice push pe `main` ajunge live** în
+aproximativ un minut, la https://amihaiciobanu.github.io/HappyHop/. Nu e nevoie de `dist/`.
+
+- Pages publică rădăcina prin Jekyll, care ignoră folderele ce încep cu `_`: de aceea
+  `_tools/` și `_source-photos/` nu ajung pe site. **Nu adăuga un fișier `.nojekyll`** — le-ar
+  publica pe amândouă.
+- Toate linkurile din pagini sunt relative (`css/site.css`, `assets/img/…`), așa că site-ul
+  merge la fel sub `/HappyHop/` și, mai târziu, la rădăcina domeniului.
+- Starea ultimului build: `gh api repos/AMihaiCiobanu/HappyHop/pages/builds/latest`.
+
+### Domeniul happyhop.ro
+
+`happyhop.ro` arată încă site-ul vechi (hosting-ul actual, `138.199.246.140`). Ca să treacă pe Pages:
+
+1. În Settings → Pages → Custom domain scrie `happyhop.ro`. GitHub face un commit cu fișierul
+   `CNAME` pe `main` — rulează `git pull` după aceea.
+2. La registrarul domeniului: patru înregistrări `A` pentru `happyhop.ro` către
+   `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`, și `www` ca
+   `CNAME` către `amihaiciobanu.github.io`.
+3. După ce DNS-ul s-a propagat, bifează **Enforce HTTPS**.
+
+`canonical`, `sitemap.xml` și `robots.txt` folosesc deja `https://happyhop.ro`, deci copia de
+pe `github.io` nu concurează în Google cu domeniul real.
+
+### Altă găzduire (opțional)
+
 ```bash
 ./deploy.sh
 ```
 
-Creează `dist/` (~3,6 MB) cu paginile, `css/`, `js/` și `assets/` — fără `_source-photos/` și
-fără `_tools/`. **Se urcă pe server conținutul lui `dist/`, nu rădăcina proiectului.**
-
-Proiectul e sub git, cu `dist/` și `.DS_Store` în `.gitignore`. Dacă repo-ul ajunge pe GitHub,
-Netlify sau Vercel se pot lega direct la el și fac deploy automat la fiecare push.
+Creează `dist/` (~5,3 MB) cu paginile, `css/`, `js/` și `assets/` — fără `_source-photos/` și
+fără `_tools/`. Pe o găzduire clasică (cPanel, FTP) se urcă conținutul lui `dist/`, nu
+rădăcina proiectului.
 
 ## Cum modifici conținutul
 
