@@ -19,6 +19,15 @@ REASONS = [
     ("Abonamente avantajoase", "Reduceri pentru accesul regulat la Happy &amp; Hop, pentru copiii care revin des."),
 ]
 
+# Recenzii Google, preluate textual: (numar de stele, text).
+REVIEWS = [
+    (5, "Best playground for kids! love it!"),
+    (5, "Un loc minunat pentru copii, unde distracția este garantată! Cei mici s-au bucurat enorm de experiență și, fără ezitare, au dat 5 stele pentru cât de mult s-au distrat. Atmosfera prietenoasă și activitățile variate fac din acest loc o alegere excelentă pentru petrecerea timpului în familie. Recomand cu încredere!"),
+    (4, "Un loc foarte frumos și aventuros pentru copilași, de o complexitate de la foarte ușor spre moderat. Au și o sală pentru petreceri aniversare, baia a fost îngrijită de fiecare dată. Pe alocuri sunt urme vizibile de uzură și ar mai trebui îmbunătățiri constante, cu mențiunea că nu se observă la prima vedere. În plus, ar fi foarte potrivit un anunț că e responsabilitatea părinților să își țină acasă copilașii bolnavi."),
+    (5, "Un spațiu foarte distractiv și cerut de copilul nostru de 2 ani și jumătate. Aș menționa că e bine ca un părinte să fie cu ochii pe copil, pentru că în graba lor de copii se întâmplă des să se împingă sau lovească unii pe alții în diversele secțiuni de acolo."),
+    (5, "Spațiul foarte mare, diversificat cât să satisfacă toți piticii care se plictisesc repede și caută activități mai diverse — însă în ziua în care am fost noi a fost foarte frig în interior. Ușa se deschide larg și tot frigul se simte cam până la jumătatea spațiului. În spate, spațiul era ok ca și temperatură."),
+]
+
 # `geo`: (latitudine, longitudine) pentru fiecare locatie. Se iau din Google Maps —
 # click dreapta pe pin, prima linie din meniu copiaza coordonatele. Cat timp e None,
 # schema se publica fara `geo` (mai bine lipsa decat gresita).
@@ -123,14 +132,18 @@ def img_tag(name, widths, sizes, alt, cls="", extra="", base=800, eager=False):
     ow, oh = IMG_DIMS[name]
     def real_w(x):
         return ow if x == "max" else int(x)
-    srcset = ", ".join(["assets/img/%s-%s.jpg %dw" % (name, x, real_w(x)) for x in widths])
+    def srcset(ext):
+        return ", ".join(["assets/img/%s-%s.%s %dw" % (name, x, ext, real_w(x)) for x in widths])
     default = "assets/img/%s-%s.jpg" % (name, widths[-1])
     w = min(base, ow)
     h = int(round(w * oh / float(ow)))
     loading = 'loading="eager" fetchpriority="high"' if eager else 'loading="lazy"'
     c = ' class="%s"' % cls if cls else ""
-    return ('<img%s src="%s" srcset="%s" sizes="%s" width="%d" height="%d" alt="%s" %s decoding="async"%s>'
-            % (c, default, srcset, sizes, w, h, alt, loading, (" " + extra) if extra else ""))
+    # AVIF are ~55% din greutatea JPG-ului la aceeasi calitate; browserele vechi iau JPG-ul.
+    return ('<picture><source type="image/avif" srcset="%s" sizes="%s">'
+            '<img%s src="%s" srcset="%s" sizes="%s" width="%d" height="%d" alt="%s" %s decoding="async"%s></picture>'
+            % (srcset("avif"), sizes, c, default, srcset("jpg"), sizes, w, h, alt, loading,
+               (" " + extra) if extra else ""))
 
 
 # ============================================================ INDEX
@@ -156,6 +169,14 @@ def page_index(icon, C):
         """          <a href="galerie.html" aria-label="Vezi galeria foto">%s</a>"""
         % img_tag(n, ["400", "800"], "(min-width:1024px) 16vw, (min-width:768px) 30vw, 45vw", alt)
         for n, _s, alt in GALLERY[:6]])
+
+    reviews = "\n".join([
+        """            <article class="review-card reveal">
+              <div class="review-card__stars" aria-label="%d din 5 stele">%s</div>
+              <p>„%s”</p>
+              <span class="review-card__src">Recenzie Google</span>
+            </article>""" % (stars, icon("i-star-fill") * stars, text)
+        for stars, text in REVIEWS])
 
     def compact(l):
         """„Luni 13:00 – 20:00" -> „Luni 13–20": pe cardurile mici încape pe un rând."""
@@ -283,23 +304,20 @@ def page_index(icon, C):
             <div class="pass-card__icon i-sky">%s</div>
             <h3>Acces individual</h3>
             <p>Intrare valabilă pentru o sesiune de joacă, la oricare dintre locațiile deschise.</p>
-            <a class="btn btn--outline btn--sm" href="tel:%s">Întreabă de tarif</a>
           </article>
           <article class="pass-card reveal">
             <div class="pass-card__icon i-pink">%s</div>
             <h3>Pachet family</h3>
             <p>Ideal pentru familiile cu doi sau mai mulți copii care vin împreună la joacă.</p>
-            <a class="btn btn--outline btn--sm" href="tel:%s">Întreabă de tarif</a>
           </article>
           <article class="pass-card reveal">
             <div class="pass-card__icon i-yellow">%s</div>
             <h3>Abonament lunar</h3>
             <p>Acces nelimitat la toate atracțiile, cu reducere pentru vizitele regulate.</p>
-            <a class="btn btn--outline btn--sm" href="tel:%s">Întreabă de tarif</a>
           </article>
         </div>
 
-        <p class="text-center" style="margin-top:var(--sp-5);color:var(--hh-muted)">Tarifele de intrare se afișează la recepție și diferă pe locații. Sună-ne pentru prețul zilei.</p>
+        <p class="text-center" style="margin-top:var(--sp-5);color:var(--hh-muted)">Tarifele de intrare se afișează la recepție și diferă pe locații. Pentru prețul zilei, sună-ne la <a href="tel:%s">%s</a>.</p>
       </div>
     </section>
 
@@ -362,6 +380,26 @@ def page_index(icon, C):
 
     <section class="section--tight">
       <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow eyebrow--yellow">%s Recenzii</span>
+          <h2>Ce spun părinții despre noi</h2>
+          <p class="lead">4,5 din 5 — recenzii reale de la familiile care ne-au vizitat, preluate de pe Google.</p>
+        </div>
+
+        <div class="reviews-slider" style="margin-top:var(--sp-6)" data-slider>
+          <div class="reviews-slider__track" data-slider-track>
+%s
+          </div>
+          <div class="reviews-slider__nav">
+            <button type="button" class="slider-btn" data-slider-prev aria-label="Recenzia anterioară"><svg aria-hidden="true" style="transform:scaleX(-1)"><use href="#i-arrow"></use></svg></button>
+            <button type="button" class="slider-btn" data-slider-next aria-label="Recenzia următoare">%s</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section--tight">
+      <div class="container">
         <div class="social-band reveal">
           <div class="social-band__head">
             <span class="eyebrow">%s Rămâi aproape</span>
@@ -395,7 +433,6 @@ def page_index(icon, C):
 
           <div class="social-band__actions">
             <a class="btn btn--fb" href="%s" target="_blank" rel="noopener">%s Urmărește-ne pe Facebook</a>
-            <a class="btn btn--outline" href="%s" target="_blank" rel="noopener">%s Scrie-ne pe WhatsApp</a>
           </div>
         </div>
       </div>
@@ -428,9 +465,8 @@ def page_index(icon, C):
         icon("i-sparkle"), cards,
         icon("i-star"), reasons,
         icon("i-ticket"),
-        icon("i-ticket"), C["TEL1"],
-        icon("i-family"), C["TEL1"],
-        icon("i-calendar"), C["TEL1"],
+        icon("i-ticket"), icon("i-family"), icon("i-calendar"),
+        C["TEL1"], C["TEL1F"],
         icon("i-balloon"),
         icon("i-check"), icon("i-check"), icon("i-check"),
         icon("i-arrow"), C["WA_PARTY"], icon("i-wa"),
@@ -440,8 +476,9 @@ def page_index(icon, C):
                 "Masă de petrecere cu fundal foto Happy Birthday"),
         icon("i-map"), loc_cards, icon("i-arrow"),
         icon("i-sparkle"), strip, icon("i-arrow"),
+        icon("i-star"), reviews, icon("i-arrow"),
         icon("i-heart"), icon("i-ticket"), icon("i-balloon"), icon("i-star"),
-        C["FACEBOOK"], icon("i-fb"), C["WA_GEN"], icon("i-wa"),
+        C["FACEBOOK"], icon("i-fb"),
         C["TEL1"], icon("i-phone"), C["TEL1F"], C["WA_GEN"], icon("i-wa"),
     )
 
@@ -591,7 +628,7 @@ def page_petreceri(icon, C):
           <h2>Fiecare aniversare devine un eveniment magic</h2>
           <p class="lead">Oferim pachete complete pentru petreceri, astfel încât tu să te bucuri de moment, fără stres.</p>
           <p>Organizarea unei petreceri poate fi o provocare, dar noi ne ocupăm de toate detaliile pentru a ne asigura că micuțul tău și invitații săi vor avea parte de o zi de neuitat. Cu un spațiu generos, echipamente sigure și activități captivante, Happy &amp; Hop este locul ideal pentru a sărbători alături de familie și prieteni.</p>
-          <div class="hero__actions">
+          <div class="hero__actions" data-contact-zone>
             <a class="btn btn--wa" href="%s" target="_blank" rel="noopener">%s Verifică disponibilitatea</a>
             <a class="btn btn--outline" href="tel:%s">%s %s</a>
           </div>
@@ -963,7 +1000,7 @@ def page_contact(icon, C):
     return page_head(icon, "i-phone", "Contact",
                      "Hai să vorbim",
                      "Pentru orice informații ne poți suna, ne poți scrie pe WhatsApp sau ne poți vizita la oricare dintre locații.") + """
-    <section class="section">
+    <section class="section" data-contact-zone>
       <div class="container split">
         <div class="split__body reveal">
           <h2>Trimite-ne un mesaj</h2>
@@ -1059,9 +1096,7 @@ def page_contact(icon, C):
        icon("i-info"), C["WA_GEN"], C["TEL1"], C["TEL1F"],
        icon("i-phone"), C["TEL1"], C["TEL1F"], C["TEL2"], C["TEL2F"],
        icon("i-wa"), C["WA_GEN"],
-       icon("i-pin"), icon("i-pin"), icon("i-clock")) + cta_band(
-        icon, C, "Ne vedem la joacă",
-        "Sună-ne pentru tarife, program sau rezervarea unei petreceri.")
+       icon("i-pin"), icon("i-pin"), icon("i-clock"))
 
 
 # ============================================================ POLITICĂ

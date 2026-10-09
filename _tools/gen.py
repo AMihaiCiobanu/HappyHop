@@ -69,7 +69,7 @@ def header(current):
   <header class="site-header">
     <div class="container site-header__inner">
       <a class="brand" href="index.html">
-        <img src="assets/brand/logo.png" alt="" width="46" height="46">
+        <img src="assets/brand/logo-104.png" alt="" width="46" height="46">
         <span>
           <span class="brand__name">Happy&nbsp;<span>&amp;</span>&nbsp;Hop</span>
           <span class="brand__tag">Loc de joacă · Iași</span>
@@ -93,7 +93,7 @@ def header(current):
   <div class="mobile-panel" id="mobile-panel" role="dialog" aria-modal="true" aria-label="Meniu principal" hidden>
     <div class="mobile-panel__top">
       <a class="brand" href="index.html">
-        <img src="assets/brand/logo.png" alt="" width="46" height="46">
+        <img src="assets/brand/logo-104.png" alt="" width="46" height="46">
         <span class="brand__name">Happy&nbsp;<span>&amp;</span>&nbsp;Hop</span>
       </a>
       <button class="nav-toggle" type="button" data-nav-close>
@@ -121,7 +121,7 @@ FOOTER = """  <footer class="site-footer">
       <div class="site-footer__grid">
         <div>
           <a class="brand" href="index.html">
-            <img src="assets/brand/logo.png" alt="" width="52" height="52">
+            <img src="assets/brand/logo-104.png" alt="" width="52" height="52">
             <span>
               <span class="brand__name">Happy&nbsp;<span>&amp;</span>&nbsp;Hop</span>
               <span class="brand__tag">Loc de joacă · Iași</span>

@@ -96,18 +96,20 @@ for f in _source-photos/*.jpg; do b=$(basename "$f" .jpg); ow=$(sips -g pixelWid
 
 Sufixul `-max` înseamnă „lățimea originală", folosit la pozele verticale mai înguste de 1600 px.
 
+Fiecare variantă JPG are și o pereche **AVIF** (~45% mai ușoară la aceeași calitate). Paginile le
+servesc printr-un `<picture>` (generat de `img_tag()` din `_tools/pages.py`): browserele care știu
+AVIF îl iau pe acela, celelalte rămân pe JPG. După ce adaugi sau înlocuiești o poză, refă și AVIF-urile:
+
+```bash
+for f in assets/img/*.jpg; do b=$(basename "$f" .jpg); n=${b%-*}; w=${b##*-}; src=_source-photos/$n.jpg; if [ "$w" = max ]; then sips -s format avif -s formatOptions 50 "$src" --out "assets/img/$b.avif"; else sips -s format avif -s formatOptions 50 --resampleWidth $w "$src" --out "assets/img/$b.avif"; fi; done
+```
+
 Dacă înlocuiești o poză cu una de altă dimensiune, actualizează și `IMG_DIMS` din
 `_tools/pages.py` — de acolo se calculează `width`/`height` și descriptorii `srcset`, ca
 raportul de aspect declarat în HTML să fie mereu cel real (altfel pagina „sare" la încărcare).
 
-WebP ar reduce încă ~30% din greutate, dar `sips` nu scrie WebP. Dacă vrei:
-
-```bash
-brew install webp
-for f in assets/img/*.jpg; do cwebp -q 78 "$f" -o "${f%.jpg}.webp"; done
-```
-
-apoi adaugi `<source type="image/webp" srcset="…">` în jurul fiecărui `<img>`.
+Logo-ul din header și footer este `assets/brand/logo-104.png` (104 px, de 2× mărimea afișată);
+`logo.png` (225 px) rămâne pentru datele structurate.
 
 ## SEO — stadiu
 

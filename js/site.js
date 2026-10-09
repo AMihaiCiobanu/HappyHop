@@ -106,6 +106,23 @@
     }, { passive: true });
   }
 
+  /* ---------- Butoane fixe de contact ---------- */
+  /* Bara de jos (mobil) si butonul flotant de WhatsApp (desktop) se ascund cat timp pe ecran
+     se vede deja o zona cu aceleasi butoane: banda CTA, footer-ul, formularul de contact. */
+  var zones = document.querySelectorAll('.cta-band, .site-footer, [data-contact-zone]');
+  if (zones.length && 'IntersectionObserver' in window) {
+    var visibleZones = [];
+    var zio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var i = visibleZones.indexOf(entry.target);
+        if (entry.isIntersecting && i < 0) visibleZones.push(entry.target);
+        else if (!entry.isIntersecting && i >= 0) visibleZones.splice(i, 1);
+      });
+      document.body.classList.toggle('contact-in-view', visibleZones.length > 0);
+    });
+    zones.forEach(function (el) { zio.observe(el); });
+  }
+
   /* ---------- Reveal la scroll ---------- */
   var revealables = document.querySelectorAll('.reveal');
   if (revealables.length) {

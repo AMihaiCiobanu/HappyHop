@@ -9,7 +9,10 @@
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body { min-height: 100svh; line-height: 1.65; -webkit-font-smoothing: antialiased; }
-img, picture, svg, video { display: block; max-width: 100%; }
+img, svg, video { display: block; max-width: 100%; }
+/* <picture> doar alege sursa (AVIF/JPG): fara cutie proprie, ca regulile scrise pentru <img>
+   (height: 100%, object-fit) sa se raporteze la containerul real, ca inainte. */
+picture { display: contents; }
 img { height: auto; }
 input, button, textarea, select { font: inherit; color: inherit; }
 button { background: none; border: 0; cursor: pointer; }
